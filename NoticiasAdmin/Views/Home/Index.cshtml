@@ -1,8 +1,160 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1 class="display-5">
+            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+        </h1>
+        <p class="lead">Bienvenido, @User.FindFirst("NombreCompleto")?.Value</p>
+        <hr />
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0">Noticias</h5>
+                        <h2 class="mb-0">@ViewBag.TotalNoticias</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-newspaper fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Noticias" asp-action="Index" class="text-white text-decoration-none">
+                    Ver todas <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0">Categorías</h5>
+                        <h2 class="mb-0">@ViewBag.TotalCategorias</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-tags fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+            @if (ViewBag.Rol == "Administrador")
+            {
+                <div class="card-footer">
+                    <a asp-controller="Categorias" asp-action="Index" class="text-white text-decoration-none">
+                        Gestionar <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0">Países</h5>
+                        <h2 class="mb-0">@ViewBag.TotalPaises</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-globe fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+            @if (ViewBag.Rol == "Administrador")
+            {
+                <div class="card-footer">
+                    <a asp-controller="Paises" asp-action="Index" class="text-white text-decoration-none">
+                        Gestionar <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (ViewBag.Rol == "Administrador")
+    {
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title mb-0">Usuarios</h5>
+                            <h2 class="mb-0">@ViewBag.TotalUsuarios</h2>
+                        </div>
+                        <div>
+                            <i class="fas fa-users fa-3x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a asp-controller="Usuarios" asp-action="Index" class="text-white text-decoration-none">
+                        Gestionar <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Últimas Noticias</h5>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.UltimasNoticias.Count == 0)
+                {
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>No hay noticias registradas aún.
+                        <a asp-controller="Noticias" asp-action="Create" class="alert-link">Crear primera noticia</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Título</th>
+                                    <th>Categoría</th>
+                                    <th>Autor</th>
+                                    <th>Fecha</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var noticia in ViewBag.UltimasNoticias)
+                                {
+                                    <tr>
+                                        <td>@noticia.Titulo</td>
+                                        <td><span class="badge bg-secondary">@noticia.Categoria.Nombre</span></td>
+                                        <td>@noticia.Usuario.NombreCompleto</td>
+                                        <td>@noticia.FechaPublicacion.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>
+                                            <a asp-controller="Noticias" asp-action="Details" asp-route-id="@noticia.NoticiaId"
+                                               class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>

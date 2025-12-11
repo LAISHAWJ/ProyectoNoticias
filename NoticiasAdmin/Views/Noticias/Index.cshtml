@@ -1,0 +1,112 @@
+﻿@model IEnumerable<NoticiasAdmin.Models.Noticia>
+@{
+    ViewData["Title"] = "Gestión de Noticias";
+}
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <h2><i class="fas fa-newspaper me-2"></i>Noticias</h2>
+    </div>
+    <div class="col-md-6 text-end">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Nueva Noticia
+        </a>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="searchString" value="@ViewData["SearchString"]"
+                       class="form-control" placeholder="Buscar...">
+            </div>
+            <div class="col-md-3">
+                <select name="categoriaId" class="form-select">
+                    <option value="">Todas las categorías</option>
+                    @foreach (var cat in ViewBag.Categorias)
+                    {
+                        <option value="@cat.CategoriaId" selected="@(ViewData["CategoriaId"]?.ToString() == cat.CategoriaId.ToString())">
+                            @cat.Nombre
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="paisId" class="form-select">
+                    <option value="">Todos los países</option>
+                    @foreach (var pais in ViewBag.Paises)
+                    {
+                        <option value="@pais.PaisId" selected="@(ViewData["PaisId"]?.ToString() == pais.PaisId.ToString())">
+                            @pais.Nombre
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-secondary w-100">
+                    <i class="fas fa-search"></i> Filtrar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Título</th>
+                        <th>Categoría</th>
+                        <th>País</th>
+                        <th>Autor</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center">No hay noticias para mostrar</td>
+                        </tr>
+                    }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Titulo</td>
+                            <td><span class="badge bg-secondary">@item.Categoria.Nombre</span></td>
+                            <td>@item.Pais.Nombre</td>
+                            <td>@item.Usuario.NombreCompleto</td>
+                            <td>@(item.FechaPublicacion?.ToString("dd/MM/yyyy") ?? "Sin fecha")</td>
+                            <td>
+                                @if (item.Activo == true)
+                                {
+                                    <span class="badge bg-success">Activa</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Inactiva</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.NoticiaId" class="btn btn-sm btn-info" title="Ver">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.NoticiaId" class="btn btn-sm btn-warning" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.NoticiaId" class="btn btn-sm btn-danger" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

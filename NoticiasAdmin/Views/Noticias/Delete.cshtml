@@ -1,0 +1,52 @@
+﻿@model NoticiasAdmin.Models.Noticia
+@{
+    ViewData["Title"] = "Eliminar Noticia";
+}
+
+<h2 class="text-danger"><i class="fas fa-trash-alt me-2"></i>Eliminar Noticia</h2>
+<hr />
+
+<div class="alert alert-danger">
+    <h4>¿Está seguro que desea eliminar esta noticia?</h4>
+    <p>Esta acción no se puede deshacer.</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h4>@Model.Titulo</h4>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Resumen</dt>
+            <dd class="col-sm-9">@Model.Resumen</dd>
+
+            <dt class="col-sm-3">Categoría</dt>
+            <dd class="col-sm-9">@Model.Categoria.Nombre</dd>
+
+            <dt class="col-sm-3">País</dt>
+            <dd class="col-sm-9">@Model.Pais.Nombre</dd>
+
+            <dt class="col-sm-3">Autor</dt>
+            <dd class="col-sm-9">@Model.Usuario.NombreCompleto</dd>
+
+            <dt class="col-sm-3">Fecha</dt>
+            <dd class="col-sm-9">
+                @(
+                                Model.FechaPublicacion?.ToString("dd/MM/yyyy HH:mm")
+                                ?? "Sin fecha"
+                                )
+            </dd>
+
+        </dl>
+    </div>
+</div>
+
+<form asp-action="Delete" method="post" class="mt-3">
+    <input type="hidden" asp-for="NoticiaId" />
+    <button type="submit" class="btn btn-danger">
+        <i class="fas fa-trash me-1"></i>Confirmar Eliminación
+    </button>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-times me-1"></i>Cancelar
+    </a>
+</form>

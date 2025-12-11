@@ -46,7 +46,7 @@ namespace NoticiasAdmin.Controllers
         // POST: Paises/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nombre,Codigo,Activo")] Pais pais)
+        public async Task<IActionResult> Create([Bind("Nombre,Codigo,Activo")] Paises pais)
         {
             if (ModelState.IsValid)
             {
@@ -75,7 +75,7 @@ namespace NoticiasAdmin.Controllers
         // POST: Paises/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PaisId,Nombre,Codigo,Activo,FechaCreacion")] Pais pais)
+        public async Task<IActionResult> Edit(int id, [Bind("PaisId,Nombre,Codigo,Activo,FechaCreacion")] Paises pais)
         {
             if (id != pais.PaisId)
                 return NotFound();

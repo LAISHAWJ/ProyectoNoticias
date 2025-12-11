@@ -1,0 +1,62 @@
+﻿@model NoticiasAdmin.Models.Usuario
+@{
+    ViewData["Title"] = "Eliminar Usuario";
+}
+
+<h2 class="text-danger"><i class="fas fa-user-times me-2"></i>Eliminar Usuario</h2>
+<hr />
+
+<div class="alert alert-danger">
+    <h4>¿Está seguro que desea eliminar este usuario?</h4>
+    <p>Esta acción no se puede deshacer.</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h4>@Model.NombreCompleto</h4>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Usuario</dt>
+            <dd class="col-sm-9">@Model.NombreUsuario</dd>
+
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">@Model.Email</dd>
+
+            <dt class="col-sm-3">Rol</dt>
+            <dd class="col-sm-9">
+                @if (Model.Rol == "Administrador")
+                {
+                    <span class="badge bg-danger">@Model.Rol</span>
+                }
+                else
+                {
+                    <span class="badge bg-info">@Model.Rol</span>
+                }
+            </dd>
+
+            <dt class="col-sm-3">Noticias Creadas</dt>
+            <dd class="col-sm-9">
+                <span class="badge bg-secondary">@ViewBag.CantidadNoticias</span>
+            </dd>
+        </dl>
+
+        @if (ViewBag.CantidadNoticias > 0)
+        {
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Advertencia:</strong> Este usuario tiene @ViewBag.CantidadNoticias noticia(s) asociada(s). No se puede eliminar.
+            </div>
+        }
+    </div>
+</div>
+
+<form asp-action="Delete" method="post" class="mt-3">
+    <input type="hidden" asp-for="UsuarioId" />
+    <button type="submit" class="btn btn-danger" @(ViewBag.CantidadNoticias > 0 ? "disabled" : "")>
+        <i class="fas fa-trash me-1"></i>Confirmar Eliminación
+    </button>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-times me-1"></i>Cancelar
+    </a>
+</form>

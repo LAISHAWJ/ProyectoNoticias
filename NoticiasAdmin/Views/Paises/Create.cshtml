@@ -1,0 +1,50 @@
+﻿@model NoticiasAdmin.Models.Paises
+@{
+    ViewData["Title"] = "Crear País";
+}
+
+<h2><i class="fas fa-plus-circle me-2"></i>Nuevo País</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Nombre" class="form-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Codigo" class="form-label"></label>
+                <input asp-for="Codigo" class="form-control" maxlength="10" />
+                <span asp-validation-for="Codigo" class="text-danger"></span>
+                <small class="form-text text-muted">Ejemplo: DO, US, ES</small>
+            </div>
+
+            <div class="mb-3">
+                <div class="form-check">
+                    <input asp-for="Activo" class="form-check-input" checked />
+                    <label asp-for="Activo" class="form-check-label"></label>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i>Guardar
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Volver
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
