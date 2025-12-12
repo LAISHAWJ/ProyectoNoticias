@@ -18,7 +18,7 @@ public partial class NoticiasDBContext : DbContext
 
     public virtual DbSet<Noticia> Noticias { get; set; }
 
-    public virtual DbSet<Paise> Paises { get; set; }
+    public virtual DbSet<Paises> Paises { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
@@ -77,7 +77,7 @@ public partial class NoticiasDBContext : DbContext
                 .HasConstraintName("FK__Noticias__Usuari__49C3F6B7");
         });
 
-        modelBuilder.Entity<Paise>(entity =>
+        modelBuilder.Entity<Paises>(entity =>
         {
             entity.HasKey(e => e.PaisId).HasName("PK__Paises__B501E1859CB60AD7");
 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace NoticiasAPI.Models;
 
-public partial class Paise
+public partial class Paises
 {
     public int PaisId { get; set; }
 

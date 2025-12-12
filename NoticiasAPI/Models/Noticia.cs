@@ -29,7 +29,7 @@ public partial class Noticia
 
     public virtual Categoria Categoria { get; set; }
 
-    public virtual Paise Pais { get; set; }
+    public virtual Paises Pais { get; set; }
 
     public virtual Usuario Usuario { get; set; }
 }
