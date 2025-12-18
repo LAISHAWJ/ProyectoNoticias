@@ -37,15 +37,21 @@
                 </div>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3 position-relative">
                 <label class="form-label">
                     Contraseña <span class="text-danger">*</span>
                 </label>
-                <input name="Password"
-                       type="password"
-                       class="form-control"
-                       required
-                       minlength="6" />
+                <div class="input-group">
+                    <input name="Password"
+                           id="passwordInput"
+                           type="password"
+                           class="form-control"
+                           required
+                           minlength="6" />
+                    <button type="button" class="btn btn-outline-secondary" id="togglePassword" tabindex="-1" aria-label="Mostrar contraseña">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
                 <div class="invalid-feedback">
                     La contraseña es obligatoria y debe tener al menos 6 caracteres.
                 </div>
@@ -53,6 +59,7 @@
                     Mínimo 6 caracteres
                 </small>
             </div>
+
 
             <div class="mb-3">
                 <label class="form-label">
@@ -133,7 +140,10 @@
     <script>
         (function () {
             'use strict';
+
             const form = document.getElementById('formUsuario');
+            const passwordInput = document.getElementById('passwordInput');
+            const togglePassword = document.getElementById('togglePassword');
 
             form.addEventListener('submit', function (event) {
                 if (!form.checkValidity()) {
@@ -142,6 +152,15 @@
                 }
                 form.classList.add('was-validated');
             }, false);
+
+            togglePassword.addEventListener('click', function () {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+
+                this.querySelector('i').classList.toggle('fa-eye');
+                this.querySelector('i').classList.toggle('fa-eye-slash');
+            });
         })();
     </script>
+
 }

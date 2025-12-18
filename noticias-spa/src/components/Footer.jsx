@@ -4,7 +4,7 @@ const Footer = () => {
       <div className="container">
         <div className="footer-content">
           <div className="footer-section">
-            <h3>Portal de Noticias</h3>
+            <h3>Portal de Noticias WeverNews</h3>
             <p>Tu fuente confiable de información</p>
           </div>
           
@@ -19,7 +19,7 @@ const Footer = () => {
           
           <div className="footer-section">
             <h4>Contacto</h4>
-            <p>info@portalnoticias.com</p>
+            <p>info@wevernews.com</p>
             <p>+1 (809) 555-0123</p>
           </div>
         </div>

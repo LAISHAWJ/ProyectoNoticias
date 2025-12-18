@@ -115,7 +115,7 @@ function App() {
           ) : (
             <>
               <div className="results-info">
-                <p>Mostrando {noticias.length} de {paginacion.totalCount} noticias</p>
+                <p>Mostrando {noticias.length} noticias</p>
               </div>
 
               <div className="grid" id="destacadas">

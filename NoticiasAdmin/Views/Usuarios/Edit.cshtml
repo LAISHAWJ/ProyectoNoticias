@@ -39,13 +39,19 @@
                 </div>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3 position-relative">
                 <label class="form-label">Nueva Contraseña</label>
-                <input name="NuevaPassword"
-                       type="password"
-                       class="form-control"
-                       minlength="6"
-                       placeholder="Opcional (mín. 6 caracteres)" />
+                <div class="input-group">
+                    <input name="NuevaPassword"
+                           id="nuevaPasswordInput"
+                           type="password"
+                           class="form-control"
+                           minlength="6"
+                           placeholder="Opcional (mín. 6 caracteres)" />
+                    <button type="button" class="btn btn-outline-secondary" id="toggleNuevaPassword" tabindex="-1" aria-label="Mostrar contraseña">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
                 <div class="invalid-feedback">
                     Si ingresa contraseña, debe tener al menos 6 caracteres.
                 </div>
@@ -116,6 +122,17 @@
                 }
                 form.classList.add('was-validated');
             }, false);
+
+            const nuevaPasswordInput = document.getElementById('nuevaPasswordInput');
+            const toggleNuevaPassword = document.getElementById('toggleNuevaPassword');
+
+            toggleNuevaPassword.addEventListener('click', function () {
+                const type = nuevaPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                nuevaPasswordInput.setAttribute('type', type);
+
+                this.querySelector('i').classList.toggle('fa-eye');
+                this.querySelector('i').classList.toggle('fa-eye-slash');
+            });
         })();
     </script>
 }
