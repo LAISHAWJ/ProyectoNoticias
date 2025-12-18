@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NoticiasAdmin.Data;
+using BCrypt.Net;
 using NoticiasAdmin.Models;
 
 namespace NoticiasAdmin.Controllers
@@ -10,16 +11,21 @@ namespace NoticiasAdmin.Controllers
     public class UsuariosController : Controller
     {
         private readonly NoticiasDBContext _context;
+        private readonly ILogger<UsuariosController> _logger;
 
-        public UsuariosController(NoticiasDBContext context)
+        public UsuariosController(NoticiasDBContext context, ILogger<UsuariosController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: Usuarios
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Usuarios.OrderBy(u => u.NombreCompleto).ToListAsync());
+            var usuarios = await _context.Usuarios
+                .OrderBy(u => u.NombreCompleto)
+                .ToListAsync();
+            return View(usuarios);
         }
 
         // GET: Usuarios/Details/5
@@ -52,27 +58,52 @@ namespace NoticiasAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("NombreUsuario,Email,NombreCompleto,Rol,Activo")] Usuario usuario, string Password)
         {
+            // Remover validación de PasswordHash ya que no viene del formulario
+            ModelState.Remove("PasswordHash");
+
             if (ModelState.IsValid)
             {
-                // Verificar si el usuario ya existe
-                var existeUsuario = await _context.Usuarios
-                    .AnyAsync(u => u.NombreUsuario == usuario.NombreUsuario || u.Email == usuario.Email);
-
-                if (existeUsuario)
+                try
                 {
-                    ModelState.AddModelError("", "El usuario o email ya existe");
-                    return View(usuario);
+                    // Verificar si el usuario ya existe
+                    var existeUsuario = await _context.Usuarios
+                        .AnyAsync(u => u.NombreUsuario == usuario.NombreUsuario || u.Email == usuario.Email);
+
+                    if (existeUsuario)
+                    {
+                        ModelState.AddModelError("", "El nombre de usuario o email ya existe");
+                        return View(usuario);
+                    }
+
+                    // Validar contraseña
+                    if (string.IsNullOrWhiteSpace(Password))
+                    {
+                        ModelState.AddModelError("Password", "La contraseña es requerida");
+                        return View(usuario);
+                    }
+
+                    if (Password.Length < 6)
+                    {
+                        ModelState.AddModelError("Password", "La contraseña debe tener al menos 6 caracteres");
+                        return View(usuario);
+                    }
+
+                    // Hashear la contraseña con BCrypt
+                    usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(Password, workFactor: 11);
+                    usuario.FechaCreacion = DateTime.Now;
+
+                    _context.Add(usuario);
+                    await _context.SaveChangesAsync();
+
+                    _logger.LogInformation($"Usuario '{usuario.NombreUsuario}' creado exitosamente por '{User.Identity.Name}'");
+                    TempData["Success"] = $"Usuario creado exitosamente.";
+                    return RedirectToAction(nameof(Index));
                 }
-
-                // En producción usar: BCrypt.Net.BCrypt.HashPassword(Password)
-                // Para simplificar usamos el password directo con un hash ficticio
-                usuario.PasswordHash = "$2a$11$8K1p/a0dL3LklnjqiWQFkuN6k3z4x5Q6.8f9p3r4v5i6h7k8j9L0m";
-                usuario.FechaCreacion = DateTime.Now;
-
-                _context.Add(usuario);
-                await _context.SaveChangesAsync();
-                TempData["Success"] = "Usuario creado exitosamente. Contraseña: Password123";
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Error al crear usuario '{usuario.NombreUsuario}'");
+                    ModelState.AddModelError("", "Ocurrió un error al crear el usuario");
+                }
             }
             return View(usuario);
         }
@@ -93,25 +124,55 @@ namespace NoticiasAdmin.Controllers
         // POST: Usuarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UsuarioId,NombreUsuario,Email,NombreCompleto,Rol,Activo,PasswordHash,FechaCreacion")] Usuario usuario, string NuevoPassword)
+        public async Task<IActionResult> Edit(int id, [Bind("UsuarioId,NombreUsuario,Email,NombreCompleto,Rol,Activo,PasswordHash,FechaCreacion")] Usuario usuario, string NuevaPassword)
         {
             if (id != usuario.UsuarioId)
                 return NotFound();
+
+            // Remover validación de campos que no vienen del formulario
+            ModelState.Remove("NuevaPassword");
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Si se proporciona nueva contraseña, actualizarla
-                    if (!string.IsNullOrEmpty(NuevoPassword))
+                    // Obtener el usuario actual de la base de datos
+                    var usuarioExistente = await _context.Usuarios
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(u => u.UsuarioId == id);
+
+                    if (usuarioExistente == null)
+                        return NotFound();
+
+                    // Si se proporciona nueva contraseña, validarla y hashearla
+                    if (!string.IsNullOrWhiteSpace(NuevaPassword))
                     {
-                        // En producción: usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(NuevoPassword);
-                        usuario.PasswordHash = "$2a$11$8K1p/a0dL3LklnjqiWQFkuN6k3z4x5Q6.8f9p3r4v5i6h7k8j9L0m";
+                        if (NuevaPassword.Length < 6)
+                        {
+                            ModelState.AddModelError("NuevaPassword", "La nueva contraseña debe tener al menos 6 caracteres");
+                            return View(usuario);
+                        }
+
+                        // Hashear nueva contraseña con BCrypt
+                        usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(NuevaPassword, workFactor: 11);
+                        _logger.LogInformation($"Contraseña actualizada para usuario '{usuario.NombreUsuario}' por '{User.Identity.Name}'");
                     }
+                    else
+                    {
+                        // Mantener la contraseña actual si no se proporciona una nueva
+                        usuario.PasswordHash = usuarioExistente.PasswordHash;
+                    }
+
+                    // Mantener la fecha de creación original
+                    usuario.FechaCreacion = usuarioExistente.FechaCreacion;
 
                     _context.Update(usuario);
                     await _context.SaveChangesAsync();
+
+                    _logger.LogInformation($"Usuario '{usuario.NombreUsuario}' actualizado por '{User.Identity.Name}'");
                     TempData["Success"] = "Usuario actualizado exitosamente";
+
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -120,7 +181,11 @@ namespace NoticiasAdmin.Controllers
                     else
                         throw;
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Error al actualizar usuario '{usuario.NombreUsuario}'");
+                    ModelState.AddModelError("", "Ocurrió un error al actualizar el usuario");
+                }
             }
             return View(usuario);
         }
@@ -149,22 +214,32 @@ namespace NoticiasAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var usuario = await _context.Usuarios.FindAsync(id);
-            if (usuario != null)
+            try
             {
-                // Verificar si tiene noticias
-                var tieneNoticias = await _context.Noticias
-                    .AnyAsync(n => n.UsuarioId == id);
-
-                if (tieneNoticias)
+                var usuario = await _context.Usuarios.FindAsync(id);
+                if (usuario != null)
                 {
-                    TempData["Error"] = "No se puede eliminar el usuario porque tiene noticias asociadas";
-                    return RedirectToAction(nameof(Index));
-                }
+                    // Verificar si tiene noticias
+                    var tieneNoticias = await _context.Noticias
+                        .AnyAsync(n => n.UsuarioId == id);
 
-                _context.Usuarios.Remove(usuario);
-                await _context.SaveChangesAsync();
-                TempData["Success"] = "Usuario eliminado exitosamente";
+                    if (tieneNoticias)
+                    {
+                        TempData["Error"] = "No se puede eliminar el usuario porque tiene noticias asociadas";
+                        return RedirectToAction(nameof(Index));
+                    }
+
+                    _context.Usuarios.Remove(usuario);
+                    await _context.SaveChangesAsync();
+
+                    _logger.LogInformation($"Usuario '{usuario.NombreUsuario}' eliminado por '{User.Identity.Name}'");
+                    TempData["Success"] = "Usuario eliminado exitosamente";
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al eliminar usuario con ID {id}");
+                TempData["Error"] = "Ocurrió un error al eliminar el usuario";
             }
 
             return RedirectToAction(nameof(Index));

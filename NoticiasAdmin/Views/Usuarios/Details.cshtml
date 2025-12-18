@@ -1,69 +1,264 @@
 ﻿@model NoticiasAdmin.Models.Usuario
+
 @{
-    ViewData["Title"] = "Detalles del Usuario";
+    ViewData["Title"] = "Detalle del Usuario";
 }
 
-<h2><i class="fas fa-user-circle me-2"></i>Detalles del Usuario</h2>
-<hr />
+<!-- HEADER -->
+<div class="mb-4">
+    <h2 class="fw-bold mb-1">
+        <i class="fas fa-user me-2 text-purple"></i>Detalle del usuario
+    </h2>
+    <span class="text-muted small">
+        Información completa del perfil
+    </span>
+</div>
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">@Model.NombreCompleto</h4>
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+
+        <div class="card user-detail-card">
+
+            <!-- HEADER -->
+            <div class="card-header user-header-gradient">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <h4 class="mb-0 fw-semibold">@Model.NombreCompleto</h4>
+                        <span class="text-white-50 small">
+                            @Model.NombreUsuario
+                        </span>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <dl class="row">
-                    <dt class="col-sm-4">Usuario</dt>
-                    <dd class="col-sm-8">@Model.NombreUsuario</dd>
 
-                    <dt class="col-sm-4">Email</dt>
-                    <dd class="col-sm-8">@Model.Email</dd>
+            <!-- BODY -->
+            <div class="card-body p-4">
 
-                    <dt class="col-sm-4">Nombre Completo</dt>
-                    <dd class="col-sm-8">@Model.NombreCompleto</dd>
+                <div class="info-grid">
 
-                    <dt class="col-sm-4">Rol</dt>
-                    <dd class="col-sm-8">
-                        @if (Model.Rol == "Administrador")
-                        {
-                            <span class="badge bg-danger">@Model.Rol</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-info">@Model.Rol</span>
-                        }
-                    </dd>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <i class="fas fa-user-circle"></i> Usuario
+                        </span>
+                        <span class="info-value">@Model.NombreUsuario</span>
+                    </div>
 
-                    <dt class="col-sm-4">Estado</dt>
-                    <dd class="col-sm-8">
-                        @if (Model.Activo == true)
-                        {
-                            <span class="badge bg-success">Activo</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-secondary">Inactivo</span>
-                        }
-                    </dd>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <i class="fas fa-envelope"></i> Email
+                        </span>
+                        <span class="info-value">@Model.Email</span>
+                    </div>
 
-                    <dt class="col-sm-4">Fecha Creación</dt>
-                    <dd class="col-sm-8">@Model.FechaCreacion?.ToString("dd/MM/yyyy HH:mm")</dd>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <i class="fas fa-id-card"></i> Nombre completo
+                        </span>
+                        <span class="info-value">@Model.NombreCompleto</span>
+                    </div>
 
-                    <dt class="col-sm-4">Noticias Creadas</dt>
-                    <dd class="col-sm-8">
-                        <span class="badge bg-secondary">@ViewBag.CantidadNoticias</span>
-                    </dd>
-                </dl>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <i class="fas fa-shield-halved"></i> Rol
+                        </span>
+                        <span class="info-value">
+                            @if (Model.Rol == "Administrador")
+                            {
+                                <span class="badge badge-admin">
+                                    <i class="fas fa-crown me-1"></i>@Model.Rol
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-editor">
+                                    <i class="fas fa-user-pen me-1"></i>@Model.Rol
+                                </span>
+                            }
+                        </span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">
+                            <i class="fas fa-circle-check"></i> Estado
+                        </span>
+                        <span class="info-value">
+                            @if (Model.Activo == true)
+                            {
+                                <span class="badge badge-active">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-inactive">Inactivo</span>
+                            }
+                        </span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">
+                            <i class="fas fa-calendar"></i> Fecha de creación
+                        </span>
+                        <span class="info-value">
+                            @Model.FechaCreacion?.ToString("dd/MM/yyyy HH:mm")
+                        </span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">
+                            <i class="fas fa-newspaper"></i> Noticias creadas
+                        </span>
+                        <span class="info-value">
+                            <span class="badge badge-soft">
+                                @ViewBag.CantidadNoticias
+                            </span>
+                        </span>
+                    </div>
+
+                </div>
+
             </div>
-            <div class="card-footer">
-                <a asp-action="Edit" asp-route-id="@Model.UsuarioId" class="btn btn-warning">
+
+            <!-- FOOTER -->
+            <div class="card-footer user-footer">
+                <a asp-action="Edit"
+                   asp-route-id="@Model.UsuarioId"
+                   class="btn btn-gradient-warning">
                     <i class="fas fa-edit me-1"></i>Editar
                 </a>
-                <a asp-action="Index" class="btn btn-secondary">
+
+                <a asp-action="Index"
+                   class="btn btn-outline-modern">
                     <i class="fas fa-arrow-left me-1"></i>Volver
                 </a>
             </div>
+
         </div>
     </div>
 </div>
+
+<!-- ESTILOS -->
+<style>
+    :root {
+        --purple-start: #7c3aed;
+        --purple-end: #9333ea;
+    }
+
+    .text-purple {
+        color: var(--purple-start);
+    }
+
+    /* CARD */
+    .user-detail-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 25px 50px rgba(0,0,0,.12);
+        overflow: hidden;
+    }
+
+    /* HEADER */
+    .user-header-gradient {
+        background: linear-gradient(135deg, var(--purple-start), var(--purple-end));
+        color: #fff;
+        padding: 24px 28px;
+    }
+
+    .user-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    /* INFO GRID */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+    }
+
+    .info-item {
+        background: #fafafa;
+        border-radius: 14px;
+        padding: 14px 16px;
+    }
+
+    .info-label {
+        font-size: .75rem;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 4px;
+    }
+
+    .info-value {
+        font-size: .95rem;
+        color: #111827;
+        font-weight: 500;
+    }
+
+    /* BADGES */
+    .badge {
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-size: .7rem;
+        font-weight: 500;
+    }
+
+    .badge-admin {
+        background: rgba(239,68,68,.15);
+        color: #7f1d1d;
+    }
+
+    .badge-editor {
+        background: rgba(59,130,246,.15);
+        color: #1e3a8a;
+    }
+
+    .badge-active {
+        background: rgba(16,185,129,.15);
+        color: #065f46;
+    }
+
+    .badge-inactive {
+        background: rgba(107,114,128,.2);
+        color: #374151;
+    }
+
+    .badge-soft {
+        background: rgba(124,58,237,.15);
+        color: #5b21b6;
+    }
+
+    /* FOOTER */
+    .user-footer {
+        background: #fafafa;
+        padding: 18px 24px;
+        display: flex;
+        gap: 10px;
+    }
+
+    /* BOTONES */
+    .btn-gradient-warning {
+        background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 10px 20px;
+        box-shadow: 0 10px 25px rgba(245,158,11,.35);
+    }
+
+    .btn-outline-modern {
+        border: 1px solid #d1d5db;
+        border-radius: 12px;
+        padding: 10px 20px;
+        background: #fff;
+        color: #374151;
+    }
+</style>

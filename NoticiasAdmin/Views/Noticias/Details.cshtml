@@ -1,59 +1,244 @@
 ﻿@model NoticiasAdmin.Models.Noticia
+
 @{
-    ViewData["Title"] = "Detalles de Noticia";
+    ViewData["Title"] = "Detalle de Noticia";
 }
 
-<h2><i class="fas fa-info-circle me-2"></i>Detalles de la Noticia</h2>
-<hr />
+<!-- HEADER -->
+<div class="mb-4">
+    <h2 class="fw-bold mb-1">
+        <i class="fas fa-newspaper me-2 text-purple"></i>Detalle de la noticia
+    </h2>
+    <span class="text-muted small">
+        Información completa del contenido publicado
+    </span>
+</div>
 
-<div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">@Model.Titulo</h4>
+<!-- CONTENEDOR -->
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+
+        <div class="card card-detail">
+
+            <!-- HEADER -->
+            <div class="card-header card-header-gradient">
+                <h3 class="mb-0 fw-semibold">
+                    @Model.Titulo
+                </h3>
             </div>
-            <div class="card-body">
+
+            <!-- BODY -->
+            <div class="card-body p-4">
+
                 @if (!string.IsNullOrEmpty(Model.ImagenUrl))
                 {
-                    <img src="@Model.ImagenUrl" alt="@Model.Titulo" class="img-fluid mb-3 rounded" />
+                    <div class="image-wrapper mb-4">
+                        <img src="@Model.ImagenUrl"
+                             alt="@Model.Titulo"
+                             class="img-fluid" />
+                    </div>
                 }
 
-                <p class="lead">@Model.Resumen</p>
-                <hr />
-                <div class="mb-3">
+                <!-- RESUMEN -->
+                <p class="lead text-muted mb-4">
+                    @Model.Resumen
+                </p>
+
+                <!-- CONTENIDO -->
+                <div class="content-box mb-5">
                     @Model.Contenido
                 </div>
 
-                <div class="row mt-4">
-                    <div class="col-md-6">
-                        <p><strong>Categoría:</strong> <span class="badge bg-secondary">@Model.Categoria.Nombre</span></p>
-                        <p><strong>País:</strong> @Model.Pais.Nombre</p>
+                <!-- METADATA -->
+                <div class="row metadata-box">
+
+                    <div class="col-md-6 mb-3">
+                        <div class="meta-item">
+                            <i class="fas fa-tag"></i>
+                            <span>
+                                <strong>Categoría:</strong>
+                                <span class="badge badge-soft">
+                                    @Model.Categoria.Nombre
+                                </span>
+                            </span>
+                        </div>
+
+                        <div class="meta-item">
+                            <i class="fas fa-globe"></i>
+                            <span>
+                                <strong>País:</strong> @Model.Pais.Nombre
+                            </span>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <p><strong>Autor:</strong> @Model.Usuario.NombreCompleto</p>
-                        <p><strong>Fecha:</strong> @(Model.FechaPublicacion?.ToString("dd/MM/yyyy HH:mm") ?? "Sin fecha")</p>
-                        <p>
-                            <strong>Estado:</strong>
-                            @if (Model.Activo == true)
-                            {
-                                <span class="badge bg-success">Activa</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-danger">Inactiva</span>
-                            }
-                        </p>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="meta-item">
+                            <i class="fas fa-user-pen"></i>
+                            <span>
+                                <strong>Autor:</strong> @Model.Usuario.NombreCompleto
+                            </span>
+                        </div>
+
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>
+                                <strong>Fecha:</strong>
+                                @(Model.FechaPublicacion?.ToString("dd/MM/yyyy HH:mm") ?? "Sin fecha")
+                            </span>
+                        </div>
+
+                        <div class="meta-item">
+                            <i class="fas fa-circle-info"></i>
+                            <span>
+                                <strong>Estado:</strong>
+                                @if (Model.Activo == true)
+                                {
+                                    <span class="badge badge-active">Activa</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-inactive">Inactiva</span>
+                                }
+                            </span>
+                        </div>
                     </div>
+
                 </div>
+
             </div>
-            <div class="card-footer">
-                <a asp-action="Edit" asp-route-id="@Model.NoticiaId" class="btn btn-warning">
+
+            <!-- FOOTER -->
+            <div class="card-footer card-footer-modern">
+                <a asp-action="Edit"
+                   asp-route-id="@Model.NoticiaId"
+                   class="btn btn-gradient-warning">
                     <i class="fas fa-edit me-1"></i>Editar
                 </a>
-                <a asp-action="Index" class="btn btn-secondary">
+
+                <a asp-action="Index"
+                   class="btn btn-outline-modern">
                     <i class="fas fa-arrow-left me-1"></i>Volver
                 </a>
             </div>
+
         </div>
     </div>
 </div>
+
+<!-- ESTILOS -->
+<style>
+    :root {
+        --purple-start: #7c3aed;
+        --purple-end: #9333ea;
+        --purple-soft: #f3e8ff;
+    }
+
+    .text-purple {
+        color: var(--purple-start);
+    }
+
+    /* CARD */
+    .card-detail {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 25px 50px rgba(0,0,0,.1);
+        overflow: hidden;
+    }
+
+    .card-header-gradient {
+        background: linear-gradient(135deg, var(--purple-start), var(--purple-end));
+        color: #fff;
+        padding: 24px 30px;
+    }
+
+    /* IMAGEN */
+    .image-wrapper {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 15px 30px rgba(0,0,0,.15);
+    }
+
+        .image-wrapper img {
+            width: 100%;
+            object-fit: cover;
+        }
+
+    /* CONTENIDO */
+    .content-box {
+        line-height: 1.8;
+        font-size: .95rem;
+        color: #374151;
+    }
+
+    /* METADATA */
+    .metadata-box {
+        background: linear-gradient(135deg, #faf5ff, #fdf4ff);
+        border-radius: 16px;
+        padding: 20px;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        font-size: .9rem;
+        color: #374151;
+    }
+
+        .meta-item i {
+            color: var(--purple-start);
+            width: 20px;
+            text-align: center;
+        }
+
+    /* BADGES */
+    .badge {
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-size: .75rem;
+        font-weight: 500;
+    }
+
+    .badge-soft {
+        background: rgba(124,58,237,.15);
+        color: #5b21b6;
+    }
+
+    .badge-active {
+        background: rgba(16,185,129,.15);
+        color: #065f46;
+    }
+
+    .badge-inactive {
+        background: rgba(239,68,68,.15);
+        color: #7f1d1d;
+    }
+
+    /* FOOTER */
+    .card-footer-modern {
+        background: #fafafa;
+        padding: 20px 30px;
+        display: flex;
+        gap: 10px;
+    }
+
+    /* BOTONES */
+    .btn-gradient-warning {
+        background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 500;
+        box-shadow: 0 10px 25px rgba(245,158,11,.35);
+    }
+
+    .btn-outline-modern {
+        border: 1px solid #d1d5db;
+        border-radius: 12px;
+        padding: 10px 20px;
+        color: #374151;
+        background: #fff;
+    }
+</style>

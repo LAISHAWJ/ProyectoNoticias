@@ -1,73 +1,259 @@
 ﻿@model IEnumerable<NoticiasAdmin.Models.Usuario>
+
 @{
     ViewData["Title"] = "Usuarios";
 }
 
-<div class="row mb-3">
-    <div class="col-md-6">
-        <h2><i class="fas fa-users me-2"></i>Usuarios</h2>
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">
+            <i class="fas fa-users me-2 text-purple"></i>Usuarios
+        </h2>
+        <span class="text-muted small">
+            Administración de accesos y roles del sistema
+        </span>
     </div>
-    <div class="col-md-6 text-end">
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="fas fa-user-plus me-1"></i>Nuevo Usuario
-        </a>
+
+    <a asp-action="Create" class="btn btn-gradient">
+        <i class="fas fa-user-plus me-1"></i>
+        Nuevo Usuario
+    </a>
+</div>
+
+<!-- TABLA -->
+<div class="card card-modern">
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+            <table class="table table-modern align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Nombre completo</th>
+                        <th>Email</th>
+                        <th class="text-center">Rol</th>
+                        <th class="text-center">Estado</th>
+                        <th>Creación</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                No hay usuarios registrados
+                            </td>
+                        </tr>
+                    }
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-semibold">
+                                @item.NombreUsuario
+                            </td>
+
+                            <td>@item.NombreCompleto</td>
+
+                            <td class="text-muted">@item.Email</td>
+
+                            <td class="text-center">
+                                @if (item.Rol == "Administrador")
+                                {
+                                    <span class="badge badge-admin">
+                                        <i class="fas fa-crown me-1"></i>Administrador
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-editor">
+                                        <i class="fas fa-user-pen me-1"></i>Editor
+                                    </span>
+                                }
+                            </td>
+
+                            <td class="text-center">
+                                @if (item.Activo == true)
+                                {
+                                    <span class="badge badge-active">
+                                        <i class="fas fa-circle-check me-1"></i>Activo
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-inactive">
+                                        <i class="fas fa-circle-xmark me-1"></i>Inactivo
+                                    </span>
+                                }
+                            </td>
+
+                            <td class="text-muted">
+                                @item.FechaCreacion?.ToString("dd/MM/yyyy")
+                            </td>
+
+                            <td class="text-end">
+                                <a asp-action="Details"
+                                   asp-route-id="@item.UsuarioId"
+                                   class="btn btn-action btn-view"
+                                   title="Ver">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.UsuarioId"
+                                   class="btn btn-action btn-edit"
+                                   title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@item.UsuarioId"
+                                   class="btn btn-action btn-delete"
+                                   title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>
 
-<div class="card">
+<!-- INFO -->
+<div class="card card-info mt-4">
     <div class="card-body">
-        <table class="table table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>Usuario</th>
-                    <th>Nombre Completo</th>
-                    <th>Email</th>
-                    <th>Rol</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.NombreUsuario</td>
-                        <td>@item.NombreCompleto</td>
-                        <td>@item.Email</td>
-                        <td>
-                            @if (item.Rol == "Administrador")
-                            {
-                                <span class="badge bg-danger">@item.Rol</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-info">@item.Rol</span>
-                            }
-                        </td>
-                        <td>
-                            @if (item.Activo == true)
-                            {
-                                <span class="badge bg-success">Activo</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-secondary">Inactivo</span>
-                            }
-                        </td>
-                        <td>
-                            <a asp-action="Details" asp-route-id="@item.UsuarioId" class="btn btn-sm btn-info">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <a asp-action="Edit" asp-route-id="@item.UsuarioId" class="btn btn-sm btn-warning">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a asp-action="Delete" asp-route-id="@item.UsuarioId" class="btn btn-sm btn-danger">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <h5 class="fw-semibold mb-3">
+            <i class="fas fa-circle-info me-2 text-purple"></i>Información del sistema
+        </h5>
+
+        <div class="row small text-muted">
+            <div class="col-md-6">
+                <p class="fw-semibold mb-1">Roles</p>
+                <ul class="mb-0">
+                    <li><strong>Administrador:</strong> Control total del sistema</li>
+                    <li><strong>Editor:</strong> Gestión de sus propias noticias</li>
+                </ul>
+            </div>
+
+            <div class="col-md-6">
+                <p class="fw-semibold mb-1">Estados</p>
+                <ul class="mb-0">
+                    <li><strong>Activo:</strong> Puede iniciar sesión</li>
+                    <li><strong>Inactivo:</strong> Acceso restringido</li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- ESTILOS -->
+<style>
+    :root {
+        --purple-start: #7c3aed;
+        --purple-end: #9333ea;
+        --purple-soft: #f3e8ff;
+    }
+
+    .text-purple {
+        color: var(--purple-start);
+    }
+
+    /* Cards */
+    .card-modern,
+    .card-info {
+        border: none;
+        border-radius: 18px;
+        box-shadow: 0 20px 40px rgba(0,0,0,.08);
+    }
+
+    .card-info {
+        background: linear-gradient(135deg, #faf5ff, #fdf4ff);
+    }
+
+    /* Botón principal */
+    .btn-gradient {
+        background: linear-gradient(135deg, var(--purple-start), var(--purple-end));
+        color: #fff;
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 500;
+        border: none;
+        box-shadow: 0 10px 25px rgba(124,58,237,.35);
+    }
+
+    /* Tabla */
+    .table-modern thead {
+        background: #fafafa;
+        font-size: .85rem;
+        text-transform: uppercase;
+        letter-spacing: .03em;
+    }
+
+    .table-modern th,
+    .table-modern td {
+        padding: 16px 18px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .table-modern tbody tr:hover {
+        background-color: var(--purple-soft);
+    }
+
+    /* Badges */
+    .badge {
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-size: .75rem;
+        font-weight: 500;
+    }
+
+    .badge-admin {
+        background: rgba(239,68,68,.15);
+        color: #7f1d1d;
+    }
+
+    .badge-editor {
+        background: rgba(59,130,246,.15);
+        color: #1e40af;
+    }
+
+    .badge-active {
+        background: rgba(16,185,129,.15);
+        color: #065f46;
+    }
+
+    .badge-inactive {
+        background: rgba(107,114,128,.2);
+        color: #374151;
+    }
+
+    /* Acciones */
+    .btn-action {
+        border-radius: 8px;
+        padding: 6px 10px;
+        border: none;
+        margin-left: 4px;
+    }
+
+    .btn-view {
+        background: rgba(59,130,246,.15);
+        color: #1e40af;
+    }
+
+    .btn-edit {
+        background: rgba(245,158,11,.15);
+        color: #92400e;
+    }
+
+    .btn-delete {
+        background: rgba(239,68,68,.15);
+        color: #7f1d1d;
+    }
+</style>

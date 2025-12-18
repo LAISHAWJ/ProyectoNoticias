@@ -8,67 +8,161 @@
 
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" id="formNoticia">
             <input type="hidden" asp-for="NoticiaId" />
             <input type="hidden" asp-for="UsuarioId" />
             <input type="hidden" asp-for="FechaPublicacion" />
 
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <div class="mb-3">
-                <label asp-for="Titulo" class="form-label"></label>
-                <input asp-for="Titulo" class="form-control" />
+                <label asp-for="Titulo" class="form-label">
+                    Título <span class="text-danger">*</span>
+                </label>
+                <input asp-for="Titulo" class="form-control"
+                       required
+                       maxlength="100" />
                 <span asp-validation-for="Titulo" class="text-danger"></span>
+                <div class="invalid-feedback">
+                    El título es obligatorio (máximo 100 caracteres).
+                </div>
+                <small class="form-text text-muted" id="tituloCounter"></small>
             </div>
 
             <div class="mb-3">
-                <label asp-for="Resumen" class="form-label"></label>
-                <textarea asp-for="Resumen" class="form-control" rows="2"></textarea>
+                <label asp-for="Resumen" class="form-label">
+                    Resumen
+                </label>
+                <textarea asp-for="Resumen" class="form-control" rows="2"
+                          maxlength="150"></textarea>
                 <span asp-validation-for="Resumen" class="text-danger"></span>
+                <small class="form-text text-muted">Opcional - Máximo 150 caracteres</small>
             </div>
 
             <div class="mb-3">
-                <label asp-for="Contenido" class="form-label"></label>
-                <textarea asp-for="Contenido" class="form-control" rows="8"></textarea>
+                <label asp-for="Contenido" class="form-label">
+                    Contenido <span class="text-danger">*</span>
+                </label>
+                <textarea asp-for="Contenido" class="form-control" rows="8"
+                          required
+                          minlength="100"></textarea>
                 <span asp-validation-for="Contenido" class="text-danger"></span>
+                <div class="invalid-feedback">
+                    El contenido es obligatorio (mínimo 100 caracteres).
+                </div>
+                <small class="form-text text-muted" id="contenidoCounter"></small>
             </div>
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label asp-for="CategoriaId" class="form-label"></label>
-                    <select asp-for="CategoriaId" class="form-select" asp-items="ViewBag.CategoriaId"></select>
+                    <label asp-for="CategoriaId" class="form-label">
+                        Categoría <span class="text-danger">*</span>
+                    </label>
+                    <select asp-for="CategoriaId" class="form-select" asp-items="ViewBag.CategoriaId" required>
+                        <option value="">-- Seleccione --</option>
+                    </select>
                     <span asp-validation-for="CategoriaId" class="text-danger"></span>
+                    <div class="invalid-feedback">
+                        Por favor, seleccione una categoría.
+                    </div>
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label asp-for="PaisId" class="form-label"></label>
-                    <select asp-for="PaisId" class="form-select" asp-items="ViewBag.PaisId"></select>
+                    <label asp-for="PaisId" class="form-label">
+                        País <span class="text-danger">*</span>
+                    </label>
+                    <select asp-for="PaisId" class="form-select" asp-items="ViewBag.PaisId" required>
+                        <option value="">-- Seleccione --</option>
+                    </select>
                     <span asp-validation-for="PaisId" class="text-danger"></span>
+                    <div class="invalid-feedback">
+                        Por favor, seleccione un país.
+                    </div>
                 </div>
             </div>
 
             <div class="mb-3">
-                <label asp-for="ImagenUrl" class="form-label"></label>
-                <input asp-for="ImagenUrl" class="form-control" />
+                <label asp-for="ImagenUrl" class="form-label">
+                    URL de Imagen
+                </label>
+                <input asp-for="ImagenUrl" class="form-control"
+                       type="url"
+                       maxlength="500" />
                 <span asp-validation-for="ImagenUrl" class="text-danger"></span>
+                <small class="form-text text-muted">Opcional - URL completa de la imagen</small>
             </div>
 
             <div class="mb-3">
-                <div class="form-check">
-                    <input asp-for="Activo" class="form-check-input" />
-                    <label asp-for="Activo" class="form-check-label"></label>
-                </div>
+                <label asp-for="Activo" class="form-label">
+                    Estado <span class="text-danger">*</span>
+                </label>
+                <select asp-for="Activo" class="form-select" required>
+                    <option value="">-- Seleccione --</option>
+                    <option value="true">Activa (Visible en el portal público)</option>
+                    <option value="false">Inactiva (Oculta del portal público)</option>
+                </select>
+                <span asp-validation-for="Activo" class="text-danger"></span>
+                <small class="form-text text-muted">Las noticias inactivas no aparecerán en el sitio web público</small>
             </div>
 
             <div class="mb-3">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save me-1"></i>Actualizar
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-save me-1"></i>Actualizar Noticia
                 </button>
-                <a asp-action="Index" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left me-1"></i>Volver
+                <a asp-action="Index" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-arrow-left me-1"></i>Cancelar
                 </a>
             </div>
         </form>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Información</h6>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-6">Publicada:</dt>
+                    <dd class="col-sm-6">@Model.FechaPublicacion?.ToString("dd/MM/yyyy")</dd>
+
+                    <dt class="col-sm-6">Hora:</dt>
+                    <dd class="col-sm-6">@Model.FechaPublicacion?.ToString("HH:mm")</dd>
+
+                    <dt class="col-sm-6">Estado:</dt>
+                    <dd class="col-sm-6">
+                        @if (Model.Activo == true)
+                        {
+                            <span class="badge bg-success">Activa</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Inactiva</span>
+                        }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="alert alert-warning">
+            <h6><i class="fas fa-exclamation-triangle me-2"></i>Importante</h6>
+            <p class="mb-0">
+                Al desactivar la noticia, dejará de aparecer en el sitio web público.
+            </p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.ImagenUrl))
+        {
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Vista Previa</h6>
+                </div>
+                <div class="card-body p-0">
+                    <img src="@Model.ImagenUrl" alt="@Model.Titulo" class="img-fluid"
+                         onerror="this.src='https://via.placeholder.com/400x250/667eea/ffffff?text=Imagen+No+Disponible'" />
+                </div>
+            </div>
+        }
     </div>
 </div>
 
@@ -76,4 +170,46 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        (function() {
+            'use strict';
+            const form = document.getElementById('formNoticia');
+
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+
+            const tituloInput = document.querySelector('input[name="Titulo"]');
+            const tituloCounter = document.getElementById('tituloCounter');
+            if (tituloInput && tituloCounter) {
+                function updateTituloCounter() {
+                    const length = tituloInput.value.length;
+                    tituloCounter.textContent = `${length}/100 caracteres`;
+                    tituloCounter.style.color = length > 50 ? '#dc3545' : '#6c757d';
+                }
+                tituloInput.addEventListener('input', updateTituloCounter);
+                updateTituloCounter();
+            }
+
+            const contenidoTextarea = document.querySelector('textarea[name="Contenido"]');
+            const contenidoCounter = document.getElementById('contenidoCounter');
+            if (contenidoTextarea && contenidoCounter) {
+                function updateContenidoCounter() {
+                    const length = contenidoTextarea.value.length;
+                    contenidoCounter.textContent = `${length} caracteres (mínimo 100)`;
+                    if (length < 100) {
+                        contenidoCounter.style.color = '#dc3545';
+                    } else {
+                        contenidoCounter.style.color = '#28a745';
+                    }
+                }
+                contenidoTextarea.addEventListener('input', updateContenidoCounter);
+                updateContenidoCounter();
+            }
+        })();
+    </script>
 }

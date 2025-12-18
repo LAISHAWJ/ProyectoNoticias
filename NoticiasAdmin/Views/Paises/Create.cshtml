@@ -8,27 +8,51 @@
 
 <div class="row">
     <div class="col-md-6">
-        <form asp-action="Create" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Create" method="post" id="formPais">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <div class="mb-3">
-                <label asp-for="Nombre" class="form-label"></label>
-                <input asp-for="Nombre" class="form-control" />
+                <label asp-for="Nombre" class="form-label">
+                    Nombre del País <span class="text-danger">*</span>
+                </label>
+                <input asp-for="Nombre" class="form-control"
+                       placeholder="Ejemplo: República Dominicana"
+                       required
+                       maxlength="100" />
                 <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Codigo" class="form-label"></label>
-                <input asp-for="Codigo" class="form-control" maxlength="10" />
-                <span asp-validation-for="Codigo" class="text-danger"></span>
-                <small class="form-text text-muted">Ejemplo: DO, US, ES</small>
-            </div>
-
-            <div class="mb-3">
-                <div class="form-check">
-                    <input asp-for="Activo" class="form-check-input" checked />
-                    <label asp-for="Activo" class="form-check-label"></label>
+                <div class="invalid-feedback">
+                    Por favor, ingrese el nombre del país (máximo 100 caracteres).
                 </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Codigo" class="form-label">
+                    Código ISO <span class="text-danger">*</span>
+                </label>
+                <input asp-for="Codigo" class="form-control"
+                       placeholder="Ejemplo: DO"
+                       required
+                       minlength="2"
+                       maxlength="4"
+                       style="text-transform: uppercase;" />
+                <span asp-validation-for="Codigo" class="text-danger"></span>
+                <div class="invalid-feedback">
+                    Por favor, ingrese el código del país (2-4 caracteres).
+                </div>
+                <small class="form-text text-muted">Código ISO del país (ej: DO, US, ES)</small>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Activo" class="form-label">
+                    Estado <span class="text-danger">*</span>
+                </label>
+                <select asp-for="Activo" class="form-select" required>
+                    <option value="">-- Seleccione un estado --</option>
+                    <option value="true" selected>Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
+                <span asp-validation-for="Activo" class="text-danger"></span>
+                <small class="form-text text-muted">Los países inactivos no aparecerán en los formularios</small>
             </div>
 
             <div class="mb-3">
@@ -41,10 +65,56 @@
             </div>
         </form>
     </div>
+
+    <div class="col-md-6">
+        <div class="alert alert-info">
+            <h5><i class="fas fa-info-circle me-2"></i>Campos Requeridos</h5>
+            <p>Los campos marcados con <span class="text-danger">*</span> son obligatorios.</p>
+            <ul class="mb-0">
+                <li><strong>Nombre:</strong> Máximo 100 caracteres</li>
+                <li><strong>Código:</strong> Entre 2 y 4 caracteres</li>
+                <li><strong>Estado:</strong> Activo o Inactivo</li>
+            </ul>
+        </div>
+
+        <div class="alert alert-warning">
+            <h5><i class="fas fa-globe me-2"></i>Ejemplos de Códigos ISO</h5>
+            <ul class="mb-0">
+                <li><strong>DO</strong> - República Dominicana</li>
+                <li><strong>US</strong> - Estados Unidos</li>
+                <li><strong>ES</strong> - España</li>
+                <li><strong>MX</strong> - México</li>
+                <li><strong>CO</strong> - Colombia</li>
+            </ul>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        // Validación adicional y feedback visual
+        (function() {
+            'use strict';
+            const form = document.getElementById('formPais');
+
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+
+            // Convertir código a mayúsculas
+            const codigoInput = document.querySelector('input[name="Codigo"]');
+            if (codigoInput) {
+                codigoInput.addEventListener('input', function() {
+                    this.value = this.value.toUpperCase();
+                });
+            }
+        })();
+    </script>
 }

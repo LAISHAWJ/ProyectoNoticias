@@ -8,46 +8,90 @@
 
 <div class="row">
     <div class="col-md-6">
-        <form asp-action="Create" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Create" method="post" id="formUsuario">
 
             <div class="mb-3">
-                <label asp-for="NombreUsuario" class="form-label"></label>
-                <input asp-for="NombreUsuario" class="form-control" />
-                <span asp-validation-for="NombreUsuario" class="text-danger"></span>
+                <label class="form-label">
+                    Nombre de Usuario <span class="text-danger">*</span>
+                </label>
+                <input name="NombreUsuario"
+                       class="form-control"
+                       placeholder="Ejemplo: jperez"
+                       required />
+                <div class="invalid-feedback">
+                    El nombre de usuario es obligatorio.
+                </div>
             </div>
 
             <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" type="email" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+                <label class="form-label">
+                    Email <span class="text-danger">*</span>
+                </label>
+                <input name="Email"
+                       type="email"
+                       class="form-control"
+                       placeholder="usuario@ejemplo.com"
+                       required />
+                <div class="invalid-feedback">
+                    Ingrese un email válido.
+                </div>
             </div>
 
             <div class="mb-3">
-                <label for="Password" class="form-label">Contraseña</label>
-                <input type="password" name="Password" class="form-control" value="Password123" />
-                <small class="form-text text-muted">Contraseña predeterminada: Password123</small>
+                <label class="form-label">
+                    Contraseña <span class="text-danger">*</span>
+                </label>
+                <input name="Password"
+                       type="password"
+                       class="form-control"
+                       required
+                       minlength="6" />
+                <div class="invalid-feedback">
+                    La contraseña es obligatoria y debe tener al menos 6 caracteres.
+                </div>
+                <small class="form-text text-muted">
+                    Mínimo 6 caracteres
+                </small>
             </div>
 
             <div class="mb-3">
-                <label asp-for="NombreCompleto" class="form-label"></label>
-                <input asp-for="NombreCompleto" class="form-control" />
-                <span asp-validation-for="NombreCompleto" class="text-danger"></span>
+                <label class="form-label">
+                    Nombre Completo <span class="text-danger">*</span>
+                </label>
+                <input name="NombreCompleto"
+                       class="form-control"
+                       placeholder="Juan Pérez"
+                       required />
+                <div class="invalid-feedback">
+                    El nombre completo es obligatorio.
+                </div>
             </div>
 
             <div class="mb-3">
-                <label asp-for="Rol" class="form-label"></label>
-                <select asp-for="Rol" class="form-select">
+                <label class="form-label">
+                    Rol <span class="text-danger">*</span>
+                </label>
+                <select name="Rol" class="form-select" required>
+                    <option value="">-- Seleccione un rol --</option>
                     <option value="Editor">Editor</option>
                     <option value="Administrador">Administrador</option>
                 </select>
-                <span asp-validation-for="Rol" class="text-danger"></span>
+                <div class="invalid-feedback">
+                    Debe seleccionar un rol.
+                </div>
             </div>
 
             <div class="mb-3">
-                <div class="form-check">
-                    <input asp-for="Activo" class="form-check-input" checked />
-                    <label asp-for="Activo" class="form-check-label"></label>
+                <label class="form-label">
+                    Estado <span class="text-danger">*</span>
+                </label>
+                <select name="Activo" class="form-select" required>
+                    <option value="">-- Seleccione un estado --</option>
+                    <option value="true" selected>Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
+                <div class="invalid-feedback">
+                    Debe seleccionar el estado.
                 </div>
             </div>
 
@@ -61,10 +105,43 @@
             </div>
         </form>
     </div>
+
+    <!-- PANEL DERECHO -->
+    <div class="col-md-6">
+        <div class="alert alert-info">
+            <h5><i class="fas fa-info-circle me-2"></i>Campos Requeridos</h5>
+            <p>Los campos marcados con <span class="text-danger">*</span> son obligatorios.</p>
+            <ul class="mb-0">
+                <li>Nombre de usuario único</li>
+                <li>Email válido</li>
+                <li>Contraseña mínima de 6 caracteres</li>
+                <li>Nombre completo requerido</li>
+                <li>Rol y estado obligatorios</li>
+            </ul>
+        </div>
+
+        <div class="alert alert-warning">
+            <h5><i class="fas fa-user-shield me-2"></i>Roles</h5>
+            <p><strong>Editor:</strong> Gestiona solo sus noticias</p>
+            <p class="mb-0"><strong>Administrador:</strong> Acceso total al sistema</p>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            'use strict';
+            const form = document.getElementById('formUsuario');
+
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        })();
+    </script>
 }

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoticiasAdmin", "NoticiasAd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoticiasAPI", "NoticiasAPI\NoticiasAPI.csproj", "{45B62EBA-2624-4833-A61D-5481236490F1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertirPassHash", "ConvertirPassHash\ConvertirPassHash.csproj", "{590582C6-8DA8-4BAD-BBAC-68646E6F5E06}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{45B62EBA-2624-4833-A61D-5481236490F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45B62EBA-2624-4833-A61D-5481236490F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45B62EBA-2624-4833-A61D-5481236490F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{590582C6-8DA8-4BAD-BBAC-68646E6F5E06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{590582C6-8DA8-4BAD-BBAC-68646E6F5E06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{590582C6-8DA8-4BAD-BBAC-68646E6F5E06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{590582C6-8DA8-4BAD-BBAC-68646E6F5E06}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

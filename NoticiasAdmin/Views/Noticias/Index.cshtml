@@ -1,112 +1,287 @@
 ﻿@model IEnumerable<NoticiasAdmin.Models.Noticia>
+
 @{
     ViewData["Title"] = "Gestión de Noticias";
 }
 
-<div class="row mb-3">
-    <div class="col-md-6">
-        <h2><i class="fas fa-newspaper me-2"></i>Noticias</h2>
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">
+            <i class="fas fa-newspaper me-2 text-purple"></i>Noticias
+        </h2>
+        <span class="text-muted small">
+            Administración de noticias publicadas
+        </span>
     </div>
-    <div class="col-md-6 text-end">
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="fas fa-plus me-1"></i>Nueva Noticia
-        </a>
-    </div>
+
+    <a asp-action="Create" class="btn btn-gradient">
+        <i class="fas fa-plus me-1"></i>
+        Nueva Noticia
+    </a>
 </div>
 
-<div class="card mb-3">
+<!-- FILTROS -->
+<div class="card card-modern mb-4">
     <div class="card-body">
-        <form method="get" class="row g-3">
+        <form method="get" class="row g-3 align-items-end">
+
             <div class="col-md-4">
-                <input type="text" name="searchString" value="@ViewData["SearchString"]"
-                       class="form-control" placeholder="Buscar...">
+                <label class="form-label small text-muted">Buscar</label>
+                <input type="text"
+                       name="searchString"
+                       value="@ViewData["SearchString"]"
+                       class="form-control form-control-modern"
+                       placeholder="Título o contenido..." />
             </div>
+
             <div class="col-md-3">
-                <select name="categoriaId" class="form-select">
-                    <option value="">Todas las categorías</option>
+                <label class="form-label small text-muted">Categoría</label>
+                <select name="categoriaId" class="form-select form-control-modern">
+                    <option value="">Todas</option>
                     @foreach (var cat in ViewBag.Categorias)
                     {
-                        <option value="@cat.CategoriaId" selected="@(ViewData["CategoriaId"]?.ToString() == cat.CategoriaId.ToString())">
+                        <option value="@cat.CategoriaId"
+                                selected="@(ViewData["CategoriaId"]?.ToString() == cat.CategoriaId.ToString())">
                             @cat.Nombre
                         </option>
                     }
                 </select>
             </div>
+
             <div class="col-md-3">
-                <select name="paisId" class="form-select">
-                    <option value="">Todos los países</option>
+                <label class="form-label small text-muted">País</label>
+                <select name="paisId" class="form-select form-control-modern">
+                    <option value="">Todos</option>
                     @foreach (var pais in ViewBag.Paises)
                     {
-                        <option value="@pais.PaisId" selected="@(ViewData["PaisId"]?.ToString() == pais.PaisId.ToString())">
+                        <option value="@pais.PaisId"
+                                selected="@(ViewData["PaisId"]?.ToString() == pais.PaisId.ToString())">
                             @pais.Nombre
                         </option>
                     }
                 </select>
             </div>
+
             <div class="col-md-2">
-                <button type="submit" class="btn btn-secondary w-100">
-                    <i class="fas fa-search"></i> Filtrar
+                <button type="submit" class="btn btn-filter w-100">
+                    <i class="fas fa-search me-1"></i>
+                    Filtrar
                 </button>
             </div>
+
         </form>
     </div>
 </div>
 
-<div class="card">
-    <div class="card-body">
+<!-- TABLA -->
+<div class="card card-modern">
+    <div class="card-body p-0">
+
         <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="table-dark">
+            <table class="table table-modern align-middle mb-0">
+                <thead>
                     <tr>
                         <th>Título</th>
                         <th>Categoría</th>
                         <th>País</th>
                         <th>Autor</th>
                         <th>Fecha</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-end">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
+
                     @if (!Model.Any())
                     {
                         <tr>
-                            <td colspan="7" class="text-center">No hay noticias para mostrar</td>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                No hay noticias para mostrar
+                            </td>
                         </tr>
                     }
+
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td>@item.Titulo</td>
-                            <td><span class="badge bg-secondary">@item.Categoria.Nombre</span></td>
-                            <td>@item.Pais.Nombre</td>
-                            <td>@item.Usuario.NombreCompleto</td>
-                            <td>@(item.FechaPublicacion?.ToString("dd/MM/yyyy") ?? "Sin fecha")</td>
+                            <td class="fw-semibold">
+                                @item.Titulo
+                            </td>
+
                             <td>
+                                <span class="badge badge-soft">
+                                    @item.Categoria.Nombre
+                                </span>
+                            </td>
+
+                            <td>@item.Pais.Nombre</td>
+
+                            <td class="text-muted">
+                                @item.Usuario.NombreCompleto
+                            </td>
+
+                            <td class="text-muted">
+                                @(item.FechaPublicacion?.ToString("dd/MM/yyyy") ?? "—")
+                            </td>
+
+                            <td class="text-center">
                                 @if (item.Activo == true)
                                 {
-                                    <span class="badge bg-success">Activa</span>
+                                    <span class="badge badge-active">Activa</span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-danger">Inactiva</span>
+                                    <span class="badge badge-inactive">Inactiva</span>
                                 }
                             </td>
-                            <td>
-                                <a asp-action="Details" asp-route-id="@item.NoticiaId" class="btn btn-sm btn-info" title="Ver">
+
+                            <td class="text-end">
+                                <a asp-action="Details"
+                                   asp-route-id="@item.NoticiaId"
+                                   class="btn btn-action btn-view"
+                                   title="Ver">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a asp-action="Edit" asp-route-id="@item.NoticiaId" class="btn btn-sm btn-warning" title="Editar">
+
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.NoticiaId"
+                                   class="btn btn-action btn-edit"
+                                   title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a asp-action="Delete" asp-route-id="@item.NoticiaId" class="btn btn-sm btn-danger" title="Eliminar">
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@item.NoticiaId"
+                                   class="btn btn-action btn-delete"
+                                   title="Eliminar">
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </td>
                         </tr>
                     }
+
                 </tbody>
             </table>
         </div>
+
     </div>
 </div>
+
+<!-- ESTILOS -->
+<style>
+    :root {
+        --purple-start: #7c3aed;
+        --purple-end: #9333ea;
+        --purple-soft: #f3e8ff;
+    }
+
+    .text-purple {
+        color: var(--purple-start);
+    }
+
+    /* Card */
+    .card-modern {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    /* Botones */
+    .btn-gradient {
+        background: linear-gradient(135deg, var(--purple-start), var(--purple-end));
+        color: #fff;
+        border-radius: 10px;
+        padding: 10px 18px;
+        font-weight: 500;
+        border: none;
+        box-shadow: 0 10px 25px rgba(124, 58, 237, 0.35);
+        transition: all .25s ease;
+    }
+
+        .btn-gradient:hover {
+            transform: translateY(-1px);
+            color: #fff;
+        }
+
+    .btn-filter {
+        background: #ede9fe;
+        color: #5b21b6;
+        border-radius: 10px;
+        border: none;
+        font-weight: 500;
+    }
+
+    /* Inputs */
+    .form-control-modern {
+        border-radius: 10px;
+    }
+
+    /* Tabla */
+    .table-modern thead {
+        background: #fafafa;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+
+    .table-modern th,
+    .table-modern td {
+        padding: 16px 18px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .table-modern tbody tr:hover {
+        background-color: var(--purple-soft);
+    }
+
+    /* Badges */
+    .badge-soft {
+        background: #e5e7eb;
+        color: #374151;
+        font-weight: 500;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+    }
+
+    .badge-active {
+        background: rgba(16,185,129,.15);
+        color: #065f46;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+    }
+
+    .badge-inactive {
+        background: rgba(239,68,68,.15);
+        color: #7f1d1d;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+    }
+
+    /* Acciones */
+    .btn-action {
+        border-radius: 8px;
+        border: none;
+        padding: 6px 10px;
+        margin-left: 4px;
+    }
+
+    .btn-view {
+        background: rgba(59,130,246,.15);
+        color: #1e40af;
+    }
+
+    .btn-edit {
+        background: rgba(245,158,11,.15);
+        color: #92400e;
+    }
+
+    .btn-delete {
+        background: rgba(239,68,68,.15);
+        color: #7f1d1d;
+    }
+</style>

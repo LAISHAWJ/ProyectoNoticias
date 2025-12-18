@@ -8,29 +8,51 @@
 
 <div class="row">
     <div class="col-md-6">
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" id="formPais">
             <input type="hidden" asp-for="PaisId" />
             <input type="hidden" asp-for="FechaCreacion" />
 
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <div class="mb-3">
-                <label asp-for="Nombre" class="form-label"></label>
-                <input asp-for="Nombre" class="form-control" />
+                <label asp-for="Nombre" class="form-label">
+                    Nombre del País <span class="text-danger">*</span>
+                </label>
+                <input asp-for="Nombre" class="form-control"
+                       required
+                       maxlength="100" />
                 <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Codigo" class="form-label"></label>
-                <input asp-for="Codigo" class="form-control" maxlength="10" />
-                <span asp-validation-for="Codigo" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <div class="form-check">
-                    <input asp-for="Activo" class="form-check-input" />
-                    <label asp-for="Activo" class="form-check-label"></label>
+                <div class="invalid-feedback">
+                    Por favor, ingrese el nombre del país (máximo 100 caracteres).
                 </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Codigo" class="form-label">
+                    Código ISO <span class="text-danger">*</span>
+                </label>
+                <input asp-for="Codigo" class="form-control"
+                       required
+                       minlength="2"
+                       maxlength="4"
+                       style="text-transform: uppercase;" />
+                <span asp-validation-for="Codigo" class="text-danger"></span>
+                <div class="invalid-feedback">
+                    Por favor, ingrese el código del país (2-4 caracteres).
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Activo" class="form-label">
+                    Estado <span class="text-danger">*</span>
+                </label>
+                <select asp-for="Activo" class="form-select" required>
+                    <option value="">-- Seleccione un estado --</option>
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
+                <span asp-validation-for="Activo" class="text-danger"></span>
+                <small class="form-text text-muted">Los países inactivos no aparecerán en los formularios</small>
             </div>
 
             <div class="mb-3">
@@ -43,10 +65,68 @@
             </div>
         </form>
     </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Información del País</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Nombre:</dt>
+                    <dd class="col-sm-7">@Model.Nombre</dd>
+
+                    <dt class="col-sm-5">Código:</dt>
+                    <dd class="col-sm-7"><span class="badge bg-secondary">@Model.Codigo</span></dd>
+
+                    <dt class="col-sm-5">Fecha de Creación:</dt>
+                    <dd class="col-sm-7">@Model.FechaCreacion?.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-5">Estado Actual:</dt>
+                    <dd class="col-sm-7">
+                        @if (Model.Activo == true)
+                        {
+                            <span class="badge bg-success">Activo</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Inactivo</span>
+                        }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="alert alert-warning mt-3">
+            <h6><i class="fas fa-exclamation-triangle me-2"></i>Nota Importante</h6>
+            <p class="mb-0">Los países inactivos no se mostrarán en los formularios de creación/edición de noticias.</p>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        (function() {
+            'use strict';
+            const form = document.getElementById('formPais');
+
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+
+            const codigoInput = document.querySelector('input[name="Codigo"]');
+            if (codigoInput) {
+                codigoInput.addEventListener('input', function() {
+                    this.value = this.value.toUpperCase();
+                });
+            }
+        })();
+    </script>
 }

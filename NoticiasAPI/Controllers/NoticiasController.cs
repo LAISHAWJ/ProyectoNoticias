@@ -21,7 +21,7 @@ namespace NoticiasAPI.Controllers
         public async Task<ActionResult<IEnumerable<NoticiaDto>>> GetNoticias(
             [FromQuery] int? paisId,
             [FromQuery] int? categoriaId,
-            [FromQuery] string busqueda,
+            [FromQuery] string? busqueda,
             [FromQuery] int pagina = 1,
             [FromQuery] int porPagina = 10)
         {

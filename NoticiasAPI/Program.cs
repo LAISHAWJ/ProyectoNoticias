@@ -3,11 +3,11 @@ using NoticiasAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Agregar DbContext
+//DbContext
 builder.Services.AddDbContext<NoticiasDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Agregar controladores
+// Controladores
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -16,20 +16,12 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
     });
 
-// Configurar CORS para permitir acceso desde el SPA
+// Configuración de CORS para permitir acceso desde el SPA
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSPA", policy =>
     {
-        policy.WithOrigins(
-                "http://localhost:5173",  // Vite (React) puerto por defecto
-                "http://localhost:3000",  // React Create App
-                "http://localhost:5284",  // Tu puerto HTTP
-                "https://localhost:7231"  // Tu puerto HTTPS
-              )
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .WithExposedHeaders("X-Total-Count", "X-Page", "X-Per-Page", "X-Total-Pages"); // Exponer headers de paginación
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
     });
 });
 
@@ -60,7 +52,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// IMPORTANTE: CORS debe ir ANTES de Authorization
+
 app.UseCors("AllowSPA");
 
 app.UseAuthorization();
@@ -71,7 +63,7 @@ app.MapControllers();
 app.Lifetime.ApplicationStarted.Register(() =>
 {
     Console.WriteLine("========================================");
-    Console.WriteLine("🚀 Noticias API está corriendo en:");
+    Console.WriteLine("Noticias API está corriendo en:");
     Console.WriteLine("   HTTP:  http://localhost:5284");
     Console.WriteLine("   HTTPS: https://localhost:7231");
     Console.WriteLine("   Swagger: https://localhost:7231");
